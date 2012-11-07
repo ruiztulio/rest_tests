@@ -1,0 +1,11 @@
+div {
+	border:5px solid gray;
+	}
+
+.divided {
+float:left;
+}
+
+.products {
+	clear:both;
+}

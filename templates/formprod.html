@@ -1,0 +1,42 @@
+{% autoescape None %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+	{% block title %}
+		<title>{{ common.get('title') }}</title>
+	{% end %}
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="en" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/styles.css" />
+		<script type="text/javascript" src="/static/jscript/jquery.js"></script>
+		<script type="text/javascript" src="/static/jscript/functions.js"></script>
+	</head>
+
+	<body id="body">
+		<div id="formprod">
+			<form id="product_form" 
+					name="product_form" 
+					action="/products/"
+					method="post">
+			<P>
+			<fieldset>
+				<legend>Datos del producto</legend>
+				<LABEL for="nombre">Descripci&oacute;n: </LABEL>
+						<INPUT type="text" id="name" name="name"><BR>
+				<LABEL for="rif">Cantidad: </LABEL>
+						<INPUT type="text" id="quantity" name="quantity"><BR>
+				<LABEL for="direccion">C&oacute;digo: </LABEL>
+						<INPUT type="text" id="code" name="code"><BR>
+				<LABEL for="direccion">Precio: </LABEL>
+						<INPUT type="text" id="price" name="price"><BR>
+			</fieldset>
+			<INPUT type="submit" value="Enviar" id="submit" >
+	
+			</form>
+		</div>
+	</body>
+</html>

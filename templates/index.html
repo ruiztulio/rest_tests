@@ -1,0 +1,60 @@
+{% autoescape None %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+	{% block title %}
+		<title>{{ common.get('title') }}</title>
+	{% end %}
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="en" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/styles.css" />
+		<script type="text/javascript" src="/static/jscript/jquery.js"></script>
+		<script type="text/javascript" src="/static/jscript/functions.js"></script>
+	</head>
+
+	<body id="body">
+		<div id="menu">
+			<a id="lnk_products" href="products/"/>Products</a>
+			<a id="lnk_sales" href="sales/"/>Sales</a>
+		</div>
+		<div id="sales" class="divided">
+		</div>
+		<div id="clients" class="divided">
+		</div>
+		<div id="detail" class="divided">
+		</div>
+		<div id="products" class="products">
+		</div>
+	</body>
+	<script type="text/javascript">
+		jQuery(document).ready(function()
+		{
+			jQuery('#lnk_products').bind('click', function (event)
+			{
+				event.preventDefault();
+				get_products();
+			});
+			jQuery('#lnk_sales').bind('click', function (event)
+			{
+				event.preventDefault();
+				get_sales();
+			});
+			
+			jQuery('.client-link').live('click', function (event)
+			{
+				event.preventDefault();
+				get_clients(jQuery(this).attr('href'));
+			});
+			
+			jQuery('.detail-link').live('click',  function(event) 
+			{
+				event.preventDefault();
+				get_detail(jQuery(this).attr('href'));
+			});
+		});
+	</script>
+</html>
