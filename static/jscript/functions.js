@@ -14,9 +14,9 @@ get_products = function ()
 	});
 }
 
-get_sales = function ()
+get_sales = function (href)
 {
-	var resp = jQuery.getJSON('sales/', function(response) 
+	var resp = jQuery.getJSON(href, function(response) 
 	{
 		var html = "<table><tr><th>Cliente</th><th>Detalle</th><th>Fecha</th></tr>";
 		for(var i=0; i < response.sales.length; ++i)

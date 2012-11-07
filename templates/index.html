@@ -19,7 +19,7 @@
 	<body id="body">
 		<div id="menu">
 			<a id="lnk_products" href="products/"/>Products</a>
-			<a id="lnk_sales" href="sales/"/>Sales</a>
+			<a id="lnk_sales" href="sales"/>Sales</a>
 		</div>
 		<div id="sales" class="divided">
 		</div>
@@ -41,7 +41,7 @@
 			jQuery('#lnk_sales').bind('click', function (event)
 			{
 				event.preventDefault();
-				get_sales();
+				get_sales(jQuery(this).attr('href'));
 			});
 			
 			jQuery('.client-link').live('click', function (event)
