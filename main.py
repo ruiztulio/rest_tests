@@ -127,7 +127,9 @@ class ProductHandler(tornado.web.RequestHandler):
         """
         for r in res:
             r.update({'ref' : 'http://%s/products/%s'%(self.request.host, r.get('id'))})
-        ret.update({'products':res})
+        ret.update({'products' : res,
+                    'status' : {'id' : 'OK', 'message' : ''}
+                    })
         return  ret
 
     def get(self, product_id):
@@ -217,7 +219,7 @@ class SaleHandler(tornado.web.RequestHandler):
         esto es en caso de que se auiera agregar informacion adicional como un paginador
         informacion de sesion, paginadores, etc
         """
-        ret.update({'sales':res})
+        ret.update({'sales':res, 'status' : {'id' : 'OK', 'message' : ''}})
         return  ret
 
     def _sales_callback(self):
@@ -277,7 +279,7 @@ class DetailHandler(tornado.web.RequestHandler):
         ret = {}
         for r in res:
             r.update({'product_id_ref' : 'http://%s/products/%s'%(self.request.host, r.get('product_id'))})
-        ret.update({'detail':res})
+        ret.update({'detail':res, 'status' : {'id' : 'OK', 'message' : ''}})
         return  ret
 
     def _detail_callback(self, sale_id):
@@ -305,7 +307,7 @@ class ClientHandler(tornado.web.RequestHandler):
         ret = {}
         for r in res:
             r.update({'ref' : 'http://%s/clients/%s'%(self.request.host, r.get('id'))})
-        ret.update({'clients':res})
+        ret.update({'clients':res, 'status' : {'id' : 'OK', 'message' : ''}})
         return  ret
 
     def get(self, client_id):
