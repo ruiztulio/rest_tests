@@ -5,11 +5,12 @@ import tornado.web
 import os.path
 import sys
 from tornado.options import (define, options)
-sys.path.append('./utils')
+sys.path.append('./lib')
 from utils import (json_handler, copyListDicts)
 import psycopg2
 import psycopg2.extras
 import json
+from async_psycopg2 import (Pool, PoolError)
 
 define("title", default="Pagina de prueba", help="Page title", type=str)
 define("company_name", default="La compania", help="Company name", type=str)
@@ -102,6 +103,14 @@ class ProductHandler(tornado.web.RequestHandler):
         """
         Se usa un unico cursor instanciado cuando se crea la aplicacion
         """
+        if not self.application.cur:
+            self.application.cur = Pool(1, 20, 10, **{
+                'host': options.pg_host,
+                'database': options.pg_dbname,
+                'user': options.pg_user,
+                'password': options.pg_pass,
+                'async': 1
+            })
         return self.application.cur
 
     def _get_products(self, product_ids = None):
@@ -177,13 +186,18 @@ class ProductHandler2(tornado.web.RequestHandler):
         en caso negativo 404, pero si se consigue validamos que los parametros
         sean los correctos segun la solicitud
         """
-        if self.request.arguments.has_key(action):
+        print action
+        print self.request.arguments
+        if actions.has_key(action):
             for arg in self.request.arguments:
-                if not arg in actions.get(action):
+                print 'Argumento ', arg
+                for param in actions.get(action):
+                    if arg == param[0]:
+                        v = param[1](self.request.arguments.get(arg)[0])
                     raise tornado.web.HTTPError(405)
         else:
-            raise tornado.web.HTTPError(404)
-        print self.request.arguments
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps({'status':{'id':'ERROR', 'message' : 'Requested method does not exists'}}, default=json_handler))
 
 class SaleHandler(tornado.web.RequestHandler):
     """
@@ -194,22 +208,38 @@ class SaleHandler(tornado.web.RequestHandler):
     """
     @property
     def cursor(self):
+        if not self.application.cur:
+            self.application.cur = Pool(1, 20, 10, **{
+                'host': options.pg_host,
+                'database': options.pg_dbname,
+                'user': options.pg_user,
+                'password': options.pg_pass,
+                'async': 1
+            })
         return self.application.cur
-
-    def _get_sales(self):
-        sql = """SELECT sales.*, clients.name client_name 
+    # def _build_pager(self):
+        
+    
+    def _build_query(self):
+        self.sql = """SELECT sales.*, clients.name client_name 
                 FROM sales JOIN clients 
                 ON sales.client_id = clients.id"""
         if self.fecha_inicio or self.fecha_fin:
-            sql += " WHERE "
+            self.sql += " WHERE "
             if self.fecha_inicio:
-                sql = self.cursor.mogrify(sql + " sale_date >= %s ", (self.fecha_inicio, ))
+                self.sql = self.cursor.mogrify(sql + " sale_date >= %s ", (self.fecha_inicio, ))
             if self.fecha_inicio and self.fecha_fin:
-                sql += " AND " 
+                self.sql += " AND " 
             if self.fecha_fin:
-                sql = self.cursor.mogrify(sql + " sale_date <= %s ", (self.fecha_fin, ))
-        self.cursor.execute(sql)
-        res = copyListDicts( self.cursor.fetchall())
+                self.sql = self.cursor.mogrify(sql + " sale_date <= %s ", (self.fecha_fin, ))
+
+        p = self.pagina and int(self.pagina) * 10 or 0
+        self.sql = self.cursor.mogrify(self.sql + " LIMIT 10 OFFSET %s ", (p, ))
+
+    def _get_sales(self):
+        self._build_query()
+        self.cursor.execute(self.sql)
+        res = copyListDicts(self.cursor.fetchall())
         ret = {}
         for r in res:
             r.update({'client_id_ref' : 'http://%s/clients/%s'%(self.request.host, r.get('client_id'))})
@@ -259,6 +289,7 @@ class SaleHandler(tornado.web.RequestHandler):
         # Se puede hacer la consulta por rango de fecha
         self.fecha_inicio = self.get_argument('fecha_inicio', '')
         self.fecha_fin = self.get_argument('fecha_fin', '')
+        self.pagina = self.get_argument('pagina', '')
         self._sales_callback()
 
 class DetailHandler(tornado.web.RequestHandler):
@@ -268,6 +299,14 @@ class DetailHandler(tornado.web.RequestHandler):
     """
     @property
     def cursor(self):
+        if not self.application.cur:
+            self.application.cur = Pool(1, 20, 10, **{
+                'host': options.pg_host,
+                'database': options.pg_dbname,
+                'user': options.pg_user,
+                'password': options.pg_pass,
+                'async': 1
+            })
         return self.application.cur
 
     def _detail_sales(self, sale_id):
@@ -296,6 +335,14 @@ class ClientHandler(tornado.web.RequestHandler):
 
     @property
     def cursor(self):
+        if not self.application.cur:
+            self.application.cur = Pool(1, 20, 10, **{
+                'host': options.pg_host,
+                'database': options.pg_dbname,
+                'user': options.pg_user,
+                'password': options.pg_pass,
+                'async': 1
+            })
         return self.application.cur
 
     def _get_clients(self, client_ids = None):
