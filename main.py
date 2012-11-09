@@ -347,9 +347,9 @@ class ClientHandler(tornado.web.RequestHandler):
 
     def _get_clients(self, client_ids = None):
         if client_ids:
-            self.cursor.execute("SELECT * FROM clients WHERE id IN (%s)", (client_ids, ))
+            self.cursor.execute("SELECT * FROM clients WHERE id IN (%s) LIMIT 5", (client_ids, ))
         else:
-            self.cursor.execute("SELECT * FROM clients")
+            self.cursor.execute("SELECT * FROM clients LIMIT 5")
         res = copyListDicts( self.cursor.fetchall())
         ret = {}
         for r in res:

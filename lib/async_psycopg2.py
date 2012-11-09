@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# https://gist.github.com/861193
 __author__ = 'Frank Smit <frank@61924.nl>'
 __version__ = '0.1.0'
 
