@@ -16,7 +16,7 @@ from handlers import products
 
 define("title", default="Pagina de prueba", help="Page title", type=str)
 define("company_name", default="La compania", help="Company name", type=str)
-define("port", default=8888, help="run on the given port", type=int)
+define("port", default=8881, help="run on the given port", type=int)
 
 define("pg_user", default="testrest", help="User for database", type=str)
 define("pg_pass", default="123", help="User password for database", type=str)

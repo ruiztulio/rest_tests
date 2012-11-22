@@ -11,6 +11,7 @@ import psycopg2
 import psycopg2.extras
 import json
 from async_psycopg2 import (Pool, PoolError)
+import products
 
 define("title", default="Pagina de prueba", help="Page title", type=str)
 define("company_name", default="La compania", help="Company name", type=str)
@@ -59,7 +60,7 @@ class Application(tornado.web.Application):
         """
         handlers = [
             (r"/", MainHandler),
-            (r"/products/(\d*)", ProductHandler),
+            (r"/products([^/]*)", products.ProductHandler),
             (r"/addproduct", AddProductHandler),
             (r"/sales([^/]*)", SaleHandler),
             (r"/clients/(\d*)", ClientHandler),
