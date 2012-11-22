@@ -59,12 +59,12 @@ class ProductHandler(tornado.web.RequestHandler):
 
     def post(self, p):
         name = self.get_argument('name', '')
-        quantity = int(self.get_argument('quantity', 0))
+        quantity = self.get_argument('quantity', 0)
         code = self.get_argument('code')
-        price = float(self.get_argument('price', 0))
-        product_id = int(self.get_argument('id'))
-        print self.request.arguments.keys() 
-        
+        price = self.get_argument('price', 0)
+        product_id = self.get_argument('id')
+        fields = self.request.arguments.keys() 
+        fo
         if product_id:
             self.cursor.execute("""UPDATE products 
                                     SET name = %s, 
