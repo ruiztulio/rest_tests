@@ -12,7 +12,9 @@ import psycopg2
 import psycopg2.extras
 import json
 from async_psycopg2 import (Pool, PoolError)
-from handlers import products 
+from handlers import (base, products)
+import urllib
+import urllib2
 
 define("title", default="Pagina de prueba", help="Page title", type=str)
 define("company_name", default="La compania", help="Company name", type=str)
@@ -34,6 +36,7 @@ class Application(tornado.web.Application):
 
         handlers = [
             (r"/", MainHandler),
+            (r"/form/([^/]*)", FormHandler),
             (r"/products([^/]*)", products.ProductHandler),
         ]
 
@@ -44,6 +47,7 @@ class Application(tornado.web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             xsrf_cookies=False,
             autoescape="xhtml_escape",
+            debug=True,
         )
 
         tornado.web.Application.__init__(self, handlers, **settings)
@@ -60,6 +64,19 @@ class MainHandler(tornado.web.RequestHandler):
     """
     def get(self):
         self.render("index.html", common = common)
+
+class FormHandler(base.BaseHandler):
+    """
+    En caso de que se desee servir paginas estaticas o plantillas creadas
+    para la aplicacion se ejecuta el metodo render y se le indica que plantilla
+    es la que va a renderizar y enviar al servidor
+    """
+    def get(self, param):
+        res = {}
+        if param:
+            self.cursor.execute("SELECT * FROM products WHERE id = %s", (param, ))
+            res = copyListDicts( self.cursor.fetchall())
+        self.render("form.html", res = res and res[0] or {})
 
 def main():
     tornado.options.parse_command_line()

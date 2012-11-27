@@ -18,58 +18,56 @@
 
 	<body id="body">
 		<div id="menu">
-			<a id="lnk_products" href="products/"/>Products</a>
-			<a id="lnk_sales" href="sales"/>Sales</a>
+			<a id="lnk_products" href="#"/>List Products</a>
+			<a id="lnk_create" href="#"/>Create Product</a>
+			<a id="lnk_edit" href="#"/>Edit Product</a>
+			<a id="lnk_delete" href="#"/>Delete Product</a>
 		</div>
-		<div id="sales" class="divided">
-		</div>
-		<div id="clients" class="divided">
-		</div>
-		<div id="detail" class="divided">
-		</div>
+        <div id="response" class="divided" style="float:right;">
+        </div>
 		<div id="products" class="products">
 		</div>
 	</body>
 	<script type="text/javascript">
 		jQuery(document).ready(function()
 		{
+			jQuery('#lnk_create').bind('click', function (event)
+			{
+				event.preventDefault();
+                jQuery.ajax({
+                    url: "/form/",
+                    type: "GET",
+                    success: function(result) {
+                        jQuery('#products').html(result);
+                    }
+                });
+			});
+
+			jQuery('#lnk_edit').bind('click', function (event)
+			{
+				event.preventDefault();
+                jQuery.ajax({
+                    url: "/form/1",
+                    type: "GET",
+                    success: function(result) {
+                        jQuery('#products').html(result);
+                    }
+                });
+			});
+
 			jQuery('#lnk_products').bind('click', function (event)
 			{
 				event.preventDefault();
 				get_products();
 			});
-			jQuery('#lnk_sales').bind('click', function (event)
+
+
+			jQuery('#lnk_delete').bind('click', function (event)
 			{
 				event.preventDefault();
-				get_sales(jQuery(this).attr('href'));
+				get_products_delete();
 			});
 			
-			jQuery('.client-link').live('click', function (event)
-			{
-				event.preventDefault();
-				get_clients(jQuery(this).attr('href'));
-			});
-			
-			jQuery('.detail-link').live('click',  function(event) 
-			{
-				event.preventDefault();
-				get_detail(jQuery(this).attr('href'));
-			});
-			
-			jQuery.ajax({
-				url: "/products",
-				type: "POST",
-				data: {id: 4, name: "Re Fulano", quantity: 2, code: "CODIGO1233"},
-				dataType: "json",
-				beforeSend: function(x) {
-					if (x && x.overrideMimeType) {
-						x.overrideMimeType("application/j-son;charset=UTF-8");
-					}
-				},
-				success: function(result) {
-					alert(result);
-				}
-			});
 		});
 	</script>
 </html>

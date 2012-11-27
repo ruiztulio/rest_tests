@@ -1,9 +1,9 @@
 
 get_products = function ()
 {
-	var resp = jQuery.getJSON('products/', function(response) 
+	var resp = jQuery.getJSON('products', function(response) 
 	{
-		var html = "<table><tr><th>Descripci&oacute;n</th></tr>";
+		var html = "<table><tr><th>Descripci&oacute;n</th><th>Precio</th><th>Cantidad</th><th>C&oacute;digo</th></tr>";
 		for(var i=0; i < response.products.length; ++i)
 			html += "<tr><td width=\"100\">"+response.products[i].name+"</td>"+
 					"<td width=\"40\" align=\"right\">"+response.products[i].price+"</td>"+
@@ -11,48 +11,79 @@ get_products = function ()
 					"<td width=\"40\" >"+response.products[i].code+"</td></tr>";
 		html += "</table>";
 		jQuery("#products").html(html);
+        jQuery("#response").append("get_products " +response.status.id + " : " +  response.status.message+"<br />");
 	});
 }
 
-get_sales = function (href)
+get_products_delete = function ()
 {
-	var resp = jQuery.getJSON(href, function(response) 
+	var resp = jQuery.getJSON('products', function(response) 
 	{
-		var html = "<table><tr><th>Cliente</th><th>Detalle</th><th>Fecha</th></tr>";
-		for(var i=0; i < response.sales.length; ++i)
-			html += "<tr><td width=\"100\"><a href=\""+response.sales[i].client_id_ref+"\" class=\"client-link\">"+ response.sales[i].client_name+"</a></td>"+
-					"<td width=\"100\"><a href=\""+response.sales[i].detail_ref+"\" class=\"detail-link\">Detalle</a></td>"+
-					"<td width=\"100\" align=\"right\">"+response.sales[i].sale_date+"</td></tr>";
-		html += "</table>";
-		jQuery("#sales").html(html);
+        var html = "<form name=\"product_delete\" id=\"product_delete\""+ 
+                    "action=\"javascript:send_form('product_delete', 'delete', 'products', 'delete_products')\""+
+                    "method=\"post\" >";
+
+		html += "<table><tr><th></th><th>Descripci&oacute;n</th><th>Precio</th><th>Cantidad</th><th>C&oacute;digo</th></tr>";
+		for(var i=0; i < response.products.length; ++i)
+			html += "<tr><td><input type=\"radio\" name=\"id\" value=\"" +response.products[i].id + "\"></td>"+
+                    "<td width=\"100\">"+response.products[i].name+"</td>"+
+					"<td width=\"40\" align=\"right\">"+response.products[i].price+"</td>"+
+					"<td width=\"40\" >"+response.products[i].quantity+"</td>"+
+					"<td width=\"40\" >"+response.products[i].code+"</td></tr>";
+		html += "</table><INPUT class=\"btn\" type=\"submit\" value=\"Delete\" id=\"submit\"></form>";
+		jQuery("#products").html(html);
+        jQuery("#response").append("get_products " +response.status.id + " : " +  response.status.message+"<br />");
 	});
 }
 
-get_clients = function (url)
+send_form = function (form, type, url, action, callback=null)
 {
-	var resp = jQuery.getJSON(url, function(response) 
-	{
-		var html = "<table><tr><th>Cliente</th><th>RIF</th><th>Tel&eacute;fono</th><th>Direcci&oacute;n</th></tr>";
-		for(var i=0; i < response.clients.length; ++i)
-			html += "<tr><td width=\"100\">"+response.clients[i].name+"</td>"+
-					"<td width=\"100\" align=\"right\">"+response.clients[i].vat+"</td>"+
-					"<td width=\"100\" align=\"right\">"+response.clients[i].phone+"</td>"+
-					"<td width=\"150\" align=\"right\">"+response.clients[i].address+"</td></tr>";
-		html += "</table>";
-		jQuery("#clients").html(html);
-	});
-}
+    var datos   = '';
+    var dataVal = '';
 
-get_detail = function (url)
-{
-	var resp = jQuery.getJSON(url, function(response) 
-	{
-		var html = "<table><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario</th></tr>";
-		for(var i=0; i < response.detail.length; ++i)
-			html += "<tr><td width=\"100\">"+response.detail[i].product_name+"</td>"+
-					"<td width=\"100\" align=\"right\">"+response.detail[i].quantity+"</td>"+
-					"<td width=\"100\" align=\"right\">"+response.detail[i].price+"</td></tr>";
-		html += "</table>";
-		jQuery("#detail").html(html);
-	});
+    jQuery('#'+form+' :input').each(
+    
+        function() 
+        {
+            value = '';
+            dataVal = '';
+            if(this.type == 'checkbox')
+            {
+                if(this.checked)
+                {
+                    value   = this.value!='' ? this.value : 'on';
+                        dataVal = this.name+'='+value+'&'
+                }
+            }
+            else if(this.type == 'radio')
+            {
+                if(this.checked)
+                {
+                    value   = this.value!='' ? this.value : 'on';
+                    dataVal = this.name+'='+value+'&'
+                }
+            }
+            else if (this.name != "")
+            {
+                value   = this.value;
+                dataVal = this.name+'='+value+'&';
+            }
+            datos   = datos + dataVal;
+        }
+    );
+    jQuery.ajax({
+        type       : type,
+        url        : url,
+        data       : datos,
+        dataType   : 'json',
+        cache      : false,
+        success    : function (response) 
+        {
+            if (callback)
+                callback();
+            jQuery("#response").append(action +" " +response.status.id + " : " +  response.status.message+"<br />");
+        }
+    });
+
+
 }
