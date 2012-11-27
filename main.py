@@ -11,7 +11,7 @@ import psycopg2
 import psycopg2.extras
 import json
 from async_psycopg2 import (Pool, PoolError)
-import products
+from handlers import products
 
 define("title", default="Pagina de prueba", help="Page title", type=str)
 define("company_name", default="La compania", help="Company name", type=str)
