@@ -1,0 +1,24 @@
+<div id="body_form">
+    <form
+        name="product_create"
+        id="product_create"
+        {% if res %}
+            action="javascript:send_form('product_create', 'post', 'products', 'update_product', get_products)"
+        {% else %}
+            action="javascript:send_form('product_create', 'put', 'products', 'create_product', get_products)"
+        {% end %}
+        method="post" >
+        {% if res %}
+            <INPUT type="hidden" id="id" name="id" value={{ res.get('id', '')  }}><BR />
+        {% end %}
+        <LABEL for="nombre">Name: </LABEL>
+            <INPUT type="text" id="name" name="name" value={{ res.get('name', '')  }}><BR />
+        <LABEL for="code">Code: </LABEL>
+            <INPUT type="text" id="code" name="code" value={{ res.get('code', '')  }}><BR />
+        <LABEL for="code">Quantity: </LABEL>
+            <INPUT type="text" id="quantity" name="quantity" value={{ res.get('quantity', '')  }}><BR />
+        <LABEL for="price">Price: </LABEL>
+            <INPUT type="text" id="price" name="price" value={{ res.get('price', '')  }}><BR />
+        <INPUT class="btn" type="submit" value="Save" id="submit" >
+    </form>
+</div>
