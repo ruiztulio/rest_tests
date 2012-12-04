@@ -19,3 +19,9 @@ def copyListDicts(lines):
             d.update({l : line[l]})
         res.append(d.copy())
     return res
+
+def generate_insert(table, fields):
+    sql = 'INSERT INTO %(name)s %(fields)s VALUES %(values)s RETURNING id'
+    f = str(tuple(fields))
+    v = str(tuple(['%s']*len(fields)))
+    return sql%{'name':table, 'fields': f, 'values':v[:-2]}

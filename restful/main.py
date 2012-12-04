@@ -12,7 +12,7 @@ import psycopg2
 import psycopg2.extras
 import json
 from async_psycopg2 import (Pool, PoolError)
-from handlers import (base, products)
+from handlers import (base, products2)
 import urllib
 import urllib2
 
@@ -37,7 +37,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/form/([^/]*)", FormHandler),
-            (r"/products([^/]*)", products.ProductHandler),
+            (r"/products([^/]*)", products2.ProductHandler),
         ]
 
         settings = dict(

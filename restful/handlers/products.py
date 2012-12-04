@@ -9,26 +9,20 @@ import base
 gen_log = logging.getLogger("tornado.general")
 
 class ProductHandler(base.BaseHandler):
-    def _get_products(self, product_ids = None):
-        if product_ids:
-            self.cursor.execute("SELECT * FROM products WHERE id IN (%s)", (product_ids, ))
-        else:
-            self.cursor.execute("SELECT * FROM products")
-        res = copyListDicts( self.cursor.fetchall())
-        ret = {}
-        for r in res:
-            r.update({'ref' : 'http://%s/products?id=%s'%(self.request.host, r.get('id'))})
-        ret.update({'products':res})
-        return  ret
+    SUPPORTED_METHODS = ("GET", "POST", "DELETE", "PUT")
 
     def get(self, p):
         product_id = self.get_argument('id', False)
         try:
             if product_id:
-                res = self._get_products(product_id)
+                self.cursor.execute("SELECT * FROM products WHERE id = %s", (product_id, ))
             else:
-                res = self._get_products()
+                self.cursor.execute("SELECT * FROM products")
+            res = copyListDicts( self.cursor.fetchall() )
+            for r in res:
+                r.update({'ref' : 'http://%s/products?id=%s'%(self.request.host, r.get('id'))})
             res.update({'status':{'id' : 'OK', 'message' : ''}})
+            res.update({'products':res, 'status':{'id' : 'OK', 'message' : ''}})
             self._send_response(res)
         except e:
             res.update({'status':{'id' : 'ERROR', 'message' : 'Hubo un error, no se pudo realizar la consulta'}})
