@@ -21,7 +21,8 @@ def copyListDicts(lines):
     return res
 
 def generate_insert(table, fields):
-    sql = 'INSERT INTO %(name)s %(fields)s VALUES %(values)s RETURNING id'
-    f = str(tuple(fields))
-    v = str(tuple(['%s']*len(fields)))
-    return sql%{'name':table, 'fields': f, 'values':v[:-2]}
+    sql = 'INSERT INTO %(name)s %(fields)s VALUES %(values)s'
+    f = str(tuple(fields)).replace("'", "")
+    v = str(tuple(['%s']*len(fields))).replace("'", "")
+    print sql%{'name':table, 'fields': f, 'values':v}
+    return sql%{'name':table, 'fields': f, 'values':v}
