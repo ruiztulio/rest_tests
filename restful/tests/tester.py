@@ -11,7 +11,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(ch)
 
 # Url desde la cual se consumiran los servicios
-url = 'http://localhost:8881/products'
+url = 'http://localhost:8881/clients'
 
 # get sin parametros a la url
 logger.info("Obteniendo info de %s"%url)
@@ -39,7 +39,7 @@ except Exception as e:
 # prueba de put
 logger.info("Agregando nuevo producto ")
 try:
-    r = requests.put(url, data = {'name':'Perolito barato', 'code':'CODIGOPEROLITO', 'price':123})
+    r = requests.post(url, data = {'name':'Petronila sinforoza', 'vat':'V12345678', 'phone':123, 'address':'por ahi'})
     if r.status_code == 200:
         logger.info("Procesado satisfactoriamente")
         logger.info("  Contenido %s"%r.content)
@@ -51,7 +51,7 @@ except Exception as e:
 # prueba de put
 logger.info("Editanto el producto")
 try:
-    r = requests.post(url, data = {'name':'Perolito Barato', 'code':'CODPERO123'})
+    r = requests.put(url, data = {'id':2, 'name':'Perolito Barato', 'vat':'CODPERO123'})
     if r.status_code == 200:
         logger.info("Procesado satisfactoriamente")
         logger.info("  Contenido %s"%r.content)
