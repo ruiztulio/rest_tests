@@ -12,13 +12,13 @@ import psycopg2
 import psycopg2.extras
 import json
 from async_psycopg2 import (Pool, PoolError)
-from handlers import (base, products2, clients)
+from handlers import (base, products, clients)
 import urllib
 import urllib2
 
 define("title", default="Pagina de prueba", help="Page title", type=str)
 define("company_name", default="La compania", help="Company name", type=str)
-define("port", default=8881, help="run on the given port", type=int)
+define("port", default=8888, help="run on the given port", type=int)
 
 define("pg_user", default="postgres", help="User for database", type=str)
 define("pg_pass", default="postgres", help="User password for database", type=str)
@@ -37,7 +37,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/form/([^/]*)", FormHandler),
-            (r"/products([^/]*)", products2.ProductHandler),
+            (r"/products([^/]*)", products.ProductHandler),
             (r"/clients([^/]*)", clients.ClientHandler),
         ]
 

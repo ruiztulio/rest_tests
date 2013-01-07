@@ -3,9 +3,9 @@
         name="product_create"
         id="product_create"
         {% if res %}
-            action="javascript:send_form('product_create', 'post', 'products', 'update_product', get_products)"
+            action="javascript:send_form('product_create', 'put', 'products', 'update_product', get_products)"
         {% else %}
-            action="javascript:send_form('product_create', 'put', 'products', 'create_product', get_products)"
+            action="javascript:send_form('product_create', 'post', 'products', 'create_product', get_products)"
         {% end %}
         method="post" >
         {% if res %}
